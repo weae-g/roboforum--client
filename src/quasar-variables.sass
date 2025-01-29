@@ -1,0 +1,126 @@
+$primary: #1976D2
+$secondary: #26A69A
+$accent: #9C27B0
+
+$dark: #1D1D1D
+
+$dark-page: #171717
+
+$positive: #0D1117
+$negative: #101010
+$info: #31CCEC
+$warning: #F2C037
+
+$shadow-color: #3F51B5 !default
+$dark-shadow-color: #3F51B5 !default
+
+
+.q-field__messages
+  color: $warning !important
+
+
+.q-field__bottom 
+  margin-bottom: 4px !important
+
+.my-scroll
+  // overflow: auto
+  // min-width: auto
+  height: 88vh
+
+@media screen and (max-width: 1023px)
+  .my-scroll
+    height: 75vh
+
+.my-scroll-2
+  overflow: auto
+  min-width: auto
+  height: 75vh
+
+@media screen and (max-width: 1023px)
+  .my-scroll-2
+    height: 60vh
+
+*
+  font-family: 'Montserrat', sans-serif
+
+.logo
+  letter-spacing: .2rem
+
+div
+  letter-spacing: .1rem !important
+
+.my-card
+  &:hover
+    cursor: pointer
+    opacity: .8
+
+@function multiple-box-shadow ($n)
+  $value: '#{random(100)}vw #{random(100)}vw #FFF'
+  @for $i from 2 through $n
+    $value: '#{$value} , #{random(100)}vw #{random(100)}vw #FFF'
+
+  @return unquote($value)
+
+$shadows-small: multiple-box-shadow(700)
+$shadows-medium: multiple-box-shadow(200)
+$shadows-big: multiple-box-shadow(100)
+
+html
+  height: 100%
+  width: 100%
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)
+  overflow: hidden
+
+#stars
+  width: 1px
+  height: 1px
+  background: transparent
+  box-shadow: $shadows-small
+  animation: animStar 50s linear infinite
+
+  &:after
+    content: " "
+    position: absolute
+    top: 100vh
+    width: 1px
+    height: 1px
+    background: transparent
+    box-shadow: $shadows-small
+
+#stars2
+  width: 2px
+  height: 2px
+  background: transparent
+  box-shadow: $shadows-medium
+  animation: animStar 80s linear infinite
+
+  &:after
+    content: " "
+    position: absolute
+    top: 100vh
+    width: 2px
+    height: 2px
+    background: transparent
+    box-shadow: $shadows-medium
+
+#stars3
+  width: 3px
+  height: 3px
+  background: transparent
+  box-shadow: $shadows-big
+  animation: animStar 130s linear infinite
+
+  &:after
+    content: " "
+    position: absolute
+    top: 100vh
+    width: 3px
+    height: 3px
+    background: transparent
+    box-shadow: $shadows-big
+
+@keyframes animStar
+  from
+    transform: translateY(0px)
+  to
+    transform: translateY(-100vh)

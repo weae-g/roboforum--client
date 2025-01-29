@@ -1,0 +1,120 @@
+<template>
+  <div class="full-width">
+    <div class="row q-mb-md">
+      <div class="col-12">
+        <q-card flat class="bg-negative">
+          <q-card-section>
+            <div class="text-h6 text-uppercase">Отслеживаемые обсуждения</div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
+    <q-card
+      v-for="(discussion, index) in userFavoriteDiscussions"
+      :key="index"
+      class="q-mb-md bg-grey-10"
+      flat>
+      <q-card-section
+        horizontal
+        class="my-card"
+        @click="navigateTo('discussion', { discussionId: discussion.id })">
+        <q-card-section class="q-pt-xs">
+          <div class="text-h5 q-mt-sm q-mb-xs">{{ discussion.title }}</div>
+          <div class="text-caption">{{ discussion.description }}</div>
+        </q-card-section>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-section>
+        <q-chip
+          v-for="(i, index) in discussion.discussionTags"
+          :key="index"
+          color="orange"
+          text-color="white"
+          icon="tag">
+          {{ i.tag.name }}
+        </q-chip>
+      </q-card-section>
+
+      <q-card-actions align="left">
+        <q-chip class="text-body1">
+          <q-avatar icon="event"> </q-avatar>
+          {{ new Date(discussion.date).toLocaleDateString("ru") }}
+        </q-chip>
+        <q-space />
+        <q-btn @click="deleteFromFavorite(discussion)" flat label="Удалить" />
+
+        <q-btn flat round icon="lock_open" class="bg-green" />
+      </q-card-actions>
+    </q-card>
+
+    <q-card
+      v-if="userFavoriteDiscussions.length == 0"
+      class="my-card q-mb-md bg-grey-10"
+      flat>
+      <q-card-section class="q-pt-xs">
+        <div class="text-h5 text-center text-uppercase q-mt-sm q-mb-xs">
+          Список пуст
+        </div>
+      </q-card-section>
+    </q-card>
+  </div>
+</template>
+<script>
+import { useNavigation } from "@/hooks/useNavigation";
+import { useNotify } from "@/hooks/useNotify";
+import { onMounted, computed, ref } from "vue";
+import { useStore } from "vuex";
+export default {
+  props: {
+    userId: Number,
+  },
+
+  setup(props) {
+    const store = useStore();
+    const { navigateTo } = useNavigation();
+    const { notify } = useNotify();
+
+    const isUserFavoriteDiscussions = ref(
+      store.state.discussion.favoriteDiscussions
+    );
+
+    const userFavoriteDiscussions = computed(() =>
+      store.state.discussion.favoriteDiscussions.map((i) => i?.discussion)
+    );
+
+    const loadData = async () => {
+      await store.dispatch("discussion/GET_FAVORITE_DISCUSSIONS", {
+        userId: props.userId,
+      });
+    };
+
+    const deleteFromFavorite = async (discussion) => {
+      await store
+        .dispatch("discussion/DELETE_FAVORITE_DISCUSSION", {
+          userId: props.userId,
+          discussionId: discussion.id,
+        })
+        .then(() => {
+          notify("OK");
+          loadData();
+        });
+    };
+
+    onMounted(() => {
+      loadData();
+    });
+
+    return {
+      userFavoriteDiscussions,
+      isUserFavoriteDiscussions,
+      navigateTo,
+      store,
+      deleteFromFavorite,
+    };
+  },
+};
+</script>
+<style lang=""></style>
